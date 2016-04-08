@@ -1,0 +1,3 @@
+mak_survey:
+    resource: '@MakSurveyBundle/Controller/'
+    type:     annotation

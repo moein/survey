@@ -1,0 +1,6 @@
+services:
+    mak_survey.survey_repository:
+        class: Mak\SurveyBundle\Repository\SurveyRepository
+        factory: ["@doctrine", getRepository]
+        arguments:
+            - Mak\SurveyBundle\Entity\Survey

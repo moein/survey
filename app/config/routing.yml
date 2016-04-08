@@ -1,0 +1,3 @@
+mak_survey:
+    resource: "@MakSurveyBundle/Resources/config/routing.yml"
+    prefix:   /
