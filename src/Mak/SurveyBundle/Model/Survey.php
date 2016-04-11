@@ -9,56 +9,63 @@
  * file that was distributed with this source code.
  */
 
-namespace Mak\SurveyBundle\Entity;
+namespace Mak\SurveyBundle\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @author moein.ak@gmail.com
- *
- * @ORM\Entity(repositoryClass="Mak\SurveyBundle\Repository\SurveyRepository")
  */
 class Survey implements \JsonSerializable
 {
+    const STATUS_DRAFT = 1;
+    const STATUS_ACTIVE = 2;
+    const STATUS_CLOSED = 3;
+
     /**
      * @var int
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=128, nullable=true)
      */
     private $code;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=100)
      * @Assert\NotBlank
+     * @Assert\Length(max=50)
      */
     private $title;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=100, nullable=true)
+     * @Assert\Length(max=200)
      */
     private $description;
 
     /**
      * @var UserInterface
-     * @ORM\ManyToOne(targetEntity="User")
      */
-    private $user;
+    private $owner;
 
     /**
      * @var Page[]
-     * @ORM\OneToMany(targetEntity="Page", mappedBy="survey")
      */
     private $pages = [];
+
+    /**
+     * @var int
+     */
+    private $status = self::STATUS_DRAFT;
+
+    public function __construct(UserInterface $user)
+    {
+        $this->owner = $user;
+    }
 
     /**
      * @return int
@@ -69,25 +76,19 @@ class Survey implements \JsonSerializable
     }
 
     /**
+     * @return bool
+     */
+    public function hasId()
+    {
+        return !is_null($this->getId());
+    }
+
+    /**
      * @return string
      */
     public function getCode()
     {
         return $this->code;
-    }
-
-    /**
-     * Generates the code
-     */
-    public function generateCode()
-    {
-        if ($this->code) {
-            throw new \LogicException(
-                'The Survey::generateCode should be called only when the survey is saved.'
-            );
-        }
-        $string = $this->getId() . mt_rand(1000, 9999) . uniqid() . mt_rand(1000, 9999);
-        $this->code = hash('sha256', $string);
     }
 
     /**
@@ -125,21 +126,21 @@ class Survey implements \JsonSerializable
     /**
      * @return UserInterface
      */
-    public function getUser()
+    public function getOwner()
     {
-        return $this->user;
+        return $this->owner;
     }
 
     /**
-     * @param UserInterface $user
+     * @param UserInterface $owner
      */
-    public function setUser($user)
+    public function setOwner($owner)
     {
-        $this->user = $user;
+        $this->owner = $owner;
     }
 
     /**
-     * @return Page[]
+     * @return Page[]|ArrayCollection
      */
     public function getPages()
     {
@@ -155,26 +156,63 @@ class Survey implements \JsonSerializable
     }
 
     /**
+     * @param string $title
      * @return Page
      */
-    public function createPage()
+    public function createPage($title = null)
     {
         $page = new Page($this);
+        $page->setTitle($title);
         $this->pages[] = $page;
 
         return $page;
     }
 
     /**
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    public function activate()
+    {
+        $this->status = self::STATUS_ACTIVE;
+        $this->generateCode();
+    }
+
+    /**
+     * Generates the code
+     */
+    private function generateCode()
+    {
+        if (!$this->hasId())
+        {
+            throw new \LogicException('You should not call activate before saving the survey');
+        }
+
+        if ($this->code) {
+            throw new \LogicException(
+                'The Survey::generateCode should be called only when the survey is saved.'
+            );
+        }
+        $string = $this->getId() . mt_rand(1000, 9999) . uniqid() . mt_rand(1000, 9999);
+        $this->code = hash('sha512', $string);
+    }
+
+    /**
      * {@inheritdoc}
      */
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return [
             'id' => $this->getId(),
-            'code' => $this->getCode(),
             'title' => $this->getTitle(),
-            'description' => $this->getDescription()
+            'description' => $this->getDescription(),
+            'status' => $this->getStatus(),
+            'pages' => $this->getPages()->toArray(),
+            'code' => $this->getCode(),
         ];
     }
 }

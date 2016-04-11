@@ -9,30 +9,27 @@
  * file that was distributed with this source code.
  */
 
-namespace Mak\SurveyBundle\Entity;
+namespace Mak\SurveyBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mak\SurveyBundle\Value\HtmlContent;
 
 /**
  * @author moein.ak@gmail.com
- *
- * @ORM\Entity
  */
 class Html extends Block
 {
     /**
      * @var string
-     * @ORM\Column(type="string", length=500, nullable=true)
      */
     private $content;
 
     /**
-     * @param HtmlContent $content
+     * @param string $content
      */
-    public function setContent(HtmlContent $content)
+    public function setContent($content)
     {
-        $this->content = (string) $content;
+        $this->content = (string) new HtmlContent($content);
     }
 
     /**
@@ -50,7 +47,16 @@ class Html extends Block
     {
         return [
             'id' => $this->getId(),
+            'type' => $this->getType(),
             'content' => $this->getContent()
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return 'html';
     }
 }

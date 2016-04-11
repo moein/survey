@@ -20,9 +20,11 @@ class AbstractRepository extends EntityRepository
 {
     protected function persist($entities)
     {
-        $entities = (array) $entities;
+        if (!is_array($entities)) {
+            $entities = [$entities];
+        }
         foreach ($entities as $entity) {
-            $this->getEntityManager->persist($entity);
+            $this->getEntityManager()->persist($entity);
         }
     }
 }

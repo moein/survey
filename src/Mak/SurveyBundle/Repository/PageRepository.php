@@ -11,8 +11,8 @@
 
 namespace Mak\SurveyBundle\Repository;
 
-use Mak\SurveyBundle\Entity\Block;
-use Mak\SurveyBundle\Entity\Page;
+use Mak\SurveyBundle\Model\Block;
+use Mak\SurveyBundle\Model\Page;
 
 /**
  * @author moein.ak@gmail.com
@@ -22,13 +22,12 @@ class PageRepository extends AbstractRepository
     public function save(Page $page)
     {
         $this->persist($page);
-        $this->persist($page->getBlocks());
-        $this->getEntityManager()->flush($page);
+        $this->getEntityManager()->flush();
     }
 
     public function saveBlock(Block $block)
     {
         $this->persist($block);
-        $this->getEntityManager()->flush($block);
+        $this->getEntityManager()->flush();
     }
 }

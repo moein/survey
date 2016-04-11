@@ -10,7 +10,7 @@
  */
 
 namespace Mak\SurveyBundle\Repository;
-use Mak\SurveyBundle\Entity\Survey;
+use Mak\SurveyBundle\Model\Survey;
 
 /**
  * @author moein.ak@gmail.com
@@ -20,7 +20,6 @@ class SurveyRepository extends AbstractRepository
     public function save(Survey $survey)
     {
         $this->persist($survey);
-        $this->persist($survey->getPages());
         $this->getEntityManager()->flush($survey);
     }
 }

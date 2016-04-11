@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Mak\SurveyBundle\Entity\Question;
+namespace Mak\SurveyBundle\Model\Question;
 
-use Mak\SurveyBundle\Entity\Block;
+use Mak\SurveyBundle\Model\Block;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,13 +22,11 @@ abstract class Question extends Block
 {
     /**
      * @var string
-     * @ORM\Column(type="string", length=200)
      */
     protected $text;
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean")
      */
     protected $optional = false;
 
@@ -53,7 +51,7 @@ abstract class Question extends Block
      */
     public function isOptional()
     {
-        return $this->optional;
+        return (boolean) $this->optional;
     }
 
     /**
@@ -65,6 +63,22 @@ abstract class Question extends Block
     }
 
     /**
+     * @return int
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
+     * @param int $position
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+    }
+
+    /**
      * @return array
      */
     protected function jsonSerializeQuestion()
@@ -72,7 +86,8 @@ abstract class Question extends Block
         return [
             'id' => $this->getId(),
             'text' => $this->getText(),
-            'optional' => $this->isOptional()
+            'optional' => $this->isOptional(),
+            'type' => $this->getType(),
         ];
     }
 }

@@ -9,22 +9,25 @@
  * file that was distributed with this source code.
  */
 
-namespace Mak\SurveyBundle\Entity;
+namespace Mak\SurveyBundle\Model\Question;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @author moein.ak@gmail.com
- *
- * @ORM\Entity
  */
-class Response
+class QuestionParagraph extends Question
 {
+    public function jsonSerialize()
+    {
+        return $this->jsonSerializeQuestion();
+    }
+
     /**
-     * @var int
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * {@inheritdoc}
      */
-    private $id;
+    public function getType()
+    {
+        return 'paragraph';
+    }
 }

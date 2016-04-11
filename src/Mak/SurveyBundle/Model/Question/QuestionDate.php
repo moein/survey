@@ -9,26 +9,25 @@
  * file that was distributed with this source code.
  */
 
-namespace Mak\SurveyBundle\Entity\Question;
+namespace Mak\SurveyBundle\Model\Question;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @author moein.ak@gmail.com
- *
- * @ORM\Entity
  */
 class QuestionDate extends Question
 {
     /**
      * @var \DateTime
-     * @ORM\Column(type="date")
+     * @Assert\Date()
      */
     private $min;
 
     /**
      * @var \DateTime
-     * @ORM\Column(type="date")
+     * @Assert\Date()
      */
     private $max;
 
@@ -43,7 +42,7 @@ class QuestionDate extends Question
     /**
      * @param \DateTime $min
      */
-    public function setMin(\DateTime $min)
+    public function setMin(\DateTime $min = null)
     {
         $this->min = $min;
     }
@@ -59,7 +58,7 @@ class QuestionDate extends Question
     /**
      * @param \DateTime $max
      */
-    public function setMax(\DateTime $max)
+    public function setMax(\DateTime $max = null)
     {
         $this->max = $max;
     }
@@ -72,9 +71,17 @@ class QuestionDate extends Question
         return array_merge(
             $this->jsonSerializeQuestion(),
             [
-                'min' => $this->getMin()->format('Y-m-d'),
-                'max' => $this->getMax()->format('Y-m-d'),
+                'min' => $this->getMin() ? $this->getMin()->format('Y-m-d') : null,
+                'max' => $this->getMax() ? $this->getMax()->format('Y-m-d') : null,
             ]
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return 'date';
     }
 }

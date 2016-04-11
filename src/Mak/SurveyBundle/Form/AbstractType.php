@@ -26,4 +26,9 @@ class AbstractType extends BaseType
     {
         $resolver->setDefault('csrf_protection', false);
     }
+
+    public function getBlockPrefix()
+    {
+        return '';
+    }
 }

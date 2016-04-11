@@ -26,7 +26,6 @@ class HtmlContent
         'h2',
         'h3',
         'h4',
-
     ];
 
     private $content;

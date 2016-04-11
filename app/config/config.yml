@@ -57,9 +57,18 @@ doctrine:
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         naming_strategy: doctrine.orm.naming_strategy.underscore
-        auto_mapping: true
+        auto_mapping: false
+        mappings:
+           MakSurveyBundle:
+              type: yml
+              prefix: Mak\SurveyBundle\Model
+              dir: %kernel.root_dir%/../src/Mak/SurveyBundle/Resources/config/doctrine
+           MakAppBundle:
+              type: annotation
+              prefix: Mak\AppBundle\Entity
+              dir: %kernel.root_dir%/../src/Mak/AppBundle/Entity
         resolve_target_entities:
-            Mak\SurveyBundle\Entity\User: Mak\AppBundle\Entity\User
+            Mak\SurveyBundle\Model\UserInterface: Mak\AppBundle\Entity\User
 
 # Swiftmailer Configuration
 swiftmailer:

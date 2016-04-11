@@ -1,0 +1,7 @@
+Mak\SurveyBundle\Model\Question\Question:
+    type: entity
+    fields:
+        text:
+            type: string
+            length: 100
+            nullable: false

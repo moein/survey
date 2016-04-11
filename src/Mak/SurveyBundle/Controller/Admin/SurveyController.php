@@ -9,12 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Mak\SurveyBundle\Controller;
+namespace Mak\SurveyBundle\Controller\Admin;
 
-use Mak\SurveyBundle\Entity\Page;
-use Mak\SurveyBundle\Entity\Survey;
+use Mak\SurveyBundle\Model\Page;
+use Mak\SurveyBundle\Model\Survey;
 use Mak\SurveyBundle\Form\SurveyType;
 use Mak\SurveyBundle\Form\PageType;
+use Mak\SurveyBundle\Model\UserInterface;
 use Mak\SurveyBundle\Repository\SurveyRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,6 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @author moein.ak@gmail.com
@@ -30,6 +32,25 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 class SurveyController extends Controller
 {
     /**
+     * @Route("/")
+     * @Method("GET")
+     * @Security("has_role('ROLE_ADMIN')")
+     * @return JsonResponse
+     */
+    public function getAll()
+    {
+        /** @var UserInterface $user */
+        $user = $this->getUser();
+
+        /** @var Survey[] $surveys */
+        $surveys = $this->getRepository()->findBy([
+            'owner' => $user,
+        ]);
+
+        return new JsonResponse($surveys);
+    }
+
+    /**
      * @param Request $request
      * @Route("/")
      * @Method("POST")
@@ -37,18 +58,19 @@ class SurveyController extends Controller
      */
     public function create(Request $request)
     {
-        $survey = new Survey();
+        /** @var UserInterface $user */
+        $user = $this->getUser();
+        $survey = new Survey($user);
         $form = $this->createForm(SurveyType::class, $survey);
 
         $form->submit($request->request->all());
-        if ($form->isValid()) {
+        if (!$form->isValid()) {
             return new JsonResponse([
-                'errors' => $form->getErrors(true, true). ''
+                'errors' => $form->getErrors(true, true) . ''
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
+        $survey->createPage();
         $surveyRepository = $this->getRepository();
-        $surveyRepository->save($survey);
-        $survey->generateCode();
         $surveyRepository->save($survey);
 
         return new JsonResponse($survey);
@@ -104,15 +126,21 @@ class SurveyController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param Page $page
+     * @param Survey $survey
      * @return JsonResponse
-     * @Route("//page")
+     * @Route("/{id}/activate")
      * @Method("POST")
      */
-    public function addHtml(Request $request, Page $page)
+    public function activate(Survey $survey)
     {
+        if ($survey->getCode()) {
+            return new JsonResponse(null, JsonResponse::HTTP_BAD_REQUEST);
+        }
 
+        $survey->activate();
+        $this->getRepository()->save($survey);
+
+        return new JsonResponse($survey);
     }
 
     /**

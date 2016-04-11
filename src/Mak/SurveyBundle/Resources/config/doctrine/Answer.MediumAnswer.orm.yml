@@ -1,0 +1,9 @@
+Mak\SurveyBundle\Model\Answer\MediumAnswer:
+    type: entity
+    table: medium_answer
+    fields:
+        value:
+            type: string
+            length: 100
+            unique: false
+            nullable: false

@@ -9,49 +9,78 @@
  * file that was distributed with this source code.
  */
 
-namespace Mak\SurveyBundle\Entity\Question;
+namespace Mak\SurveyBundle\Model\Question;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Mak\SurveyBundle\Model\Page;
 
 /**
  * @author moein.ak@gmail.com
- *
- * @ORM\Entity
  */
 class QuestionChoice extends Question
 {
     /**
-     * @var Choice[]
-     * @
+     * @var Choice[]|ArrayCollection
      */
-    protected $choices = [];
+    protected $choices;
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean")
      */
     protected $multiple = false;
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean")
      */
     protected $expanded = false;
 
     /**
-     * @return Choice[]
+     * @var array
+     */
+    protected $removedChoices = [];
+
+    public function __construct(Page $page)
+    {
+        parent::__construct($page);
+        $this->choices = new ArrayCollection();
+    }
+
+    /**
+     * @return Choice[]|ArrayCollection
      */
     public function getChoices()
     {
         return $this->choices;
     }
 
+    public function getStringChoices()
+    {
+        return array_map('strval', $this->getChoices()->toArray());
+    }
+
     /**
      * @param Choice[] $choices
      */
-    public function setChoices($choices)
+    public function setStringChoices(array $choices)
     {
-        $this->choices = $choices;
+        $this->removedChoices = $this->choices;
+        $currentChoicesCount = count($this->choices);
+        foreach (array_values($choices) as $key => $choice) {
+            if ($key < $currentChoicesCount) {
+                $this->choices[$key]->setText($choice);
+            } else {
+                $this->choices[] = new Choice($this, $choice);
+            }
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getRemovedChoices()
+    {
+        return $this->removedChoices;
     }
 
     /**
@@ -94,10 +123,18 @@ class QuestionChoice extends Question
         return array_merge(
             $this->jsonSerializeQuestion(),
             [
-                'choices' => $this->getChoices(),
+                'choices' => array_map('strval', $this->getChoices()->toArray()),
                 'multiple' => $this->isMultiple(),
                 'expanded' => $this->isExpanded(),
             ]
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return 'choice';
     }
 }

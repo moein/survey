@@ -1,3 +1,9 @@
-mak_survey:
-    resource: '@MakSurveyBundle/Controller/'
+mak_survey_admin:
+    resource: '@MakSurveyBundle/Controller/Admin'
     type:     annotation
+    prefix: /admin
+
+mak_survey_front:
+    resource: '@MakSurveyBundle/Controller/Front'
+    type:     annotation
+    prefix: /

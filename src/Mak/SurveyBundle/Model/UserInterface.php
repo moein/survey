@@ -9,19 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Mak\SurveyBundle\Entity\Question;
-
-use Doctrine\ORM\Mapping as ORM;
+namespace Mak\SurveyBundle\Model;
 
 /**
  * @author moein.ak@gmail.com
- *
- * @ORM\Entity
  */
-class QuestionParagraph extends Question
+interface UserInterface
 {
-    public function jsonSerialize()
-    {
-        return $this->jsonSerializeQuestion();
-    }
+
 }

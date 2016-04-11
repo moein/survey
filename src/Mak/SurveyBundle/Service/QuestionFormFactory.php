@@ -11,14 +11,13 @@
 
 namespace Mak\SurveyBundle\Service;
 
-use Mak\SurveyBundle\Entity\Question;
+use Mak\SurveyBundle\Model\Question;
 
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
-use Symfony\Component\Validator\Constraints\Length;
 
 /**
  * @author moein.ak@gmail.com
@@ -26,22 +25,18 @@ use Symfony\Component\Validator\Constraints\Length;
 class FormFactory
 {
     const CLASS_MAPPING = [
-        'checkbox' => [
-            'class' => Question\QuestionCheckbox::class,
-            'fields' => []
-        ],
         'date' => [
             'class' => Question\QuestionDate::class,
             'fields' => [
-                'min' => [
-                    'type' => DateType::class
-                ],
+                'min' => DateType::class,
                 'max' => DateType::class,
             ]
         ],
         'choice' => [
             'class' => Question\QuestionChoice::class,
-            'fields' => []
+            'fields' => [
+                'choices' => CollectionType::class
+            ]
         ],
         'paragraph' => [
             'class' => Question\QuestionParagraph::class,
@@ -57,12 +52,15 @@ class FormFactory
             ]
         ],
         'text' => [
-            'class' => Question\QuestionCheckbox::class,
+            'class' => Question\QuestionText::class,
             'fields' => []
         ],
         'time' => [
-            'class' => Question\QuestionCheckbox::class,
-            'fields' => []
+            'class' => Question\QuestionTime::class,
+            'fields' => [
+                'min' => DateType::class,
+                'max' => DateType::class,
+            ]
         ],
     ];
 

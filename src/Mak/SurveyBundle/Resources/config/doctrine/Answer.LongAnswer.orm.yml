@@ -1,0 +1,9 @@
+Mak\SurveyBundle\Model\Answer\LongAnswer:
+    type: entity
+    table: long_answer
+    fields:
+        value:
+            type: string
+            length: 500
+            unique: false
+            nullable: false

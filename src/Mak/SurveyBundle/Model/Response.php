@@ -9,27 +9,39 @@
  * file that was distributed with this source code.
  */
 
-namespace Mak\SurveyBundle\Entity\Question;
+namespace Mak\SurveyBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @author moein.ak@gmail.com
- *
- * @ORM\Entity
  */
-class Choice
+class Response
 {
     /**
      * @var int
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    protected $id;
+    private $id;
+
+    /**
+     * @var Survey
+     */
+    private $survey;
+
     /**
      * @var string
-     * @ORM\Column(type="string", length=50)
      */
-    private $text;
+    private $sessionToken;
+
+    /**
+     * @var Page
+     */
+    private $currentPage;
+
+    /**
+     * @var bool
+     */
+    private $finished = false;
+
+    private $answers = [];
 }

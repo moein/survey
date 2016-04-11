@@ -21,7 +21,7 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('mak_survey');
 
         // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
+        // configure your bundle. See the Entityation linked above for
         // more information on that topic.
 
         return $treeBuilder;

@@ -3,4 +3,9 @@ services:
         class: Mak\SurveyBundle\Repository\SurveyRepository
         factory: ["@doctrine", getRepository]
         arguments:
-            - Mak\SurveyBundle\Entity\Survey
+            - Mak\SurveyBundle\Model\Survey
+    mak_survey.page_repository:
+        class: Mak\SurveyBundle\Repository\PageRepository
+        factory: ["@doctrine", getRepository]
+        arguments:
+            - Mak\SurveyBundle\Model\Page

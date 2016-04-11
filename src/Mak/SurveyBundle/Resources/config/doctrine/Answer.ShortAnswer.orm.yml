@@ -1,0 +1,9 @@
+Mak\SurveyBundle\Model\Answer\ShortAnswer:
+    type: entity
+    table: short_answer
+    fields:
+        value:
+            type: string
+            length: 128
+            unique: true
+            nullable: false

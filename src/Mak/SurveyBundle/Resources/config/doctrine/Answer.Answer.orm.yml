@@ -1,0 +1,27 @@
+Mak\SurveyBundle\Model\Answer\Answer:
+    type: entity
+    table: answer
+    inheritanceType: JOINED
+    discriminatorColumn:
+        name: type
+        type: smallint
+        fieldName: type
+    discriminatorMap:
+        0: Mak\SurveyBundle\Model\Answer\Answer
+        1: Mak\SurveyBundle\Model\Answer\ShortAnswer
+        2: Mak\SurveyBundle\Model\Answer\MediumAnswer
+        3: Mak\SurveyBundle\Model\Answer\LongAnswer
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: IDENTITY
+    manyToOne:
+        response:
+            targetEntity: Mak\SurveyBundle\Model\Response
+            fetch: LAZY
+            inversedBy: answers
+        question:
+            targetEntity: Mak\SurveyBundle\Model\Question\Question
+            fetch: LAZY

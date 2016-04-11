@@ -9,38 +9,41 @@
  * file that was distributed with this source code.
  */
 
-namespace Mak\SurveyBundle\Entity\Question;
+namespace Mak\SurveyBundle\Model\Question;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @author moein.ak@gmail.com
- *
- * @ORM\Entity
+ * @Assert\Expression(
+ *     "this.getMax() - this.getMin() > 0 && this.getMax() - this.getMin() < 10",
+ *     message="The max value should at least 1 unit bigger and not more than 9!"
+ * )
  */
 class QuestionScale extends Question
 {
     /**
      * @var int
-     * @ORM\Column(type="smallint")
+     * @Assert\NotNull
+     * @Assert\Type("number")
      */
     private $min = 1;
 
     /**
      * @var int
-     * @ORM\Column(type="string", length=15)
      */
     private $minLabel;
 
     /**
      * @var int
-     * @ORM\Column(type="smallint")
+     * @Assert\NotNull
+     * @Assert\Type("number")
      */
     private $max = 5;
 
     /**
      * @var int
-     * @ORM\Column(type="string", length=15)
      */
     private $maxLabel;
 
@@ -122,5 +125,13 @@ class QuestionScale extends Question
                 'maxLabel' => $this->getMaxLabel(),
             ]
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return 'scale';
     }
 }

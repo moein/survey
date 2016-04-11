@@ -9,12 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Mak\SurveyBundle\Entity;
+namespace Mak\AppBundle\Repository;
 
-/**
- * @author moein.ak@gmail.com
- */
-interface UserInterface
+use Doctrine\ORM\EntityRepository;
+
+class UserRepository extends EntityRepository
 {
 
 }

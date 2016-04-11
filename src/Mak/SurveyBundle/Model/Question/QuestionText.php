@@ -9,16 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Mak\SurveyBundle\Entity\Question;
+namespace Mak\SurveyBundle\Model\Question;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @author moein.ak@gmail.com
- *
- * @ORM\Entity
  */
-class QuestionCheckbox extends Question
+class QuestionText extends Question
 {
     /**
      * {@inheritdoc}
@@ -26,5 +24,13 @@ class QuestionCheckbox extends Question
     public function jsonSerialize()
     {
         return $this->jsonSerializeQuestion();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return 'text';
     }
 }
